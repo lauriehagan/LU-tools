@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Impact Filter — Loyalty Untapped</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --orange: #C04402;
+    --orange-dark: #a33a02;
+    --orange-light: #f9ede6;
+    --cream: #F9F2EA;
+    --charcoal: #262626;
+    --maroon: #801205;
+    --amber: #F28A0F;
+    --teal: #128273;
+    --blue: #123D80;
+    --white: #ffffff;
+    --border: #e0d8d0;
+    --border-light: #ede8e2;
+    --text-muted: #6b6560;
+    --text-hint: #9c968f;
+    --success-bg: #eaf3e8;
+    --success-border: #128273;
+    --shadow: 0 2px 12px rgba(38,38,38,0.07);
+    --shadow-hover: 0 4px 20px rgba(38,38,38,0.12);
+  }
+
+  html { background: var(--cream); }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    background: var(--charcoal);
+    padding: 0 2rem;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar-logo {
+    background: var(--orange);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 4px 9px;
+    border-radius: 3px;
+  }
+  .topbar-name {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .topbar-doc {
+    color: var(--text-hint);
+    font-size: 12px;
+  }
+
+  /* ── Page layout ── */
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .hero h1 {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--charcoal);
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .hero h1 span { color: var(--orange); }
+  .hero-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 560px;
+  }
+
+  /* ── Meta row ── */
+  .meta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+  @media (max-width: 600px) { .meta-row { grid-template-columns: 1fr; } }
+
+  /* ── Progress ── */
+  .progress-wrap { margin-bottom: 1.75rem; }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .progress-top span { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+  .progress-bar {
+    height: 5px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--orange);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* ── Section cards ── */
+  .section-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .section-card:hover { box-shadow: var(--shadow); }
+  .section-card.has-content { border-color: var(--orange); border-left-width: 3px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .section-num {
+    width: 26px;
+    height: 26px;
+    background: var(--orange);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section-card.has-content .section-num { background: var(--teal); }
+  .section-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--charcoal);
+  }
+  .section-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-bottom: 10px;
+    padding-left: 36px;
+  }
+
+  /* ── Inputs ── */
+  input[type="text"], textarea {
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: var(--charcoal);
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    resize: vertical;
+  }
+  input[type="text"]:focus, textarea:focus {
+    border-color: var(--orange);
+    background: #fff;
+  }
+  input::placeholder, textarea::placeholder { color: var(--text-hint); }
+  textarea { min-height: 88px; }
+
+  /* ── Criteria ── */
+  .criteria-list { display: flex; flex-direction: column; gap: 7px; padding-left: 36px; }
+  .criteria-row { display: flex; align-items: center; gap: 8px; }
+  .criteria-row .num {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-hint);
+    min-width: 18px;
+    text-align: right;
+  }
+  .criteria-row input { background: var(--cream); }
+
+  /* ── AI feedback box ── */
+  .feedback-box {
+    display: none;
+    margin-top: 12px;
+    background: var(--orange-light);
+    border-left: 3px solid var(--orange);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--charcoal);
+    line-height: 1.65;
+  }
+  .feedback-box.loading { color: var(--text-muted); font-style: italic; }
+  .feedback-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 5px;
+  }
+
+  /* ── Action row ── */
+  .action-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .btn {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 10px 18px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--orange);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--orange-dark); }
+  .btn-secondary {
+    background: var(--white);
+    color: var(--charcoal);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { background: var(--cream); border-color: var(--charcoal); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { background: var(--cream); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ── Copy output ── */
+  .output-wrap {
+    display: none;
+    margin-top: 2rem;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .output-header {
+    background: var(--charcoal);
+    color: #fff;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .output-body {
+    padding: 1.25rem 1.5rem;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--charcoal);
+    white-space: pre-wrap;
+    font-family: 'Montserrat', sans-serif;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  .copy-btn {
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+  }
+  .copy-btn:hover { background: var(--orange-dark); }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--teal);
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 16px;
+    border-radius: 6px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.25s;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-hint);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-logo">LU</span>
+    <span class="topbar-name">Loyalty Untapped</span>
+  </div>
+  <span class="topbar-doc">OPS-INT — Strategic Planning Tool</span>
+</div>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="hero-eyebrow">Strategic planning tool</div>
+    <h1>Impact <span>Filter</span></h1>
+    <p class="hero-desc">Complete one per initiative before assigning or executing work. Work through each section in order — each one builds on the last. Use the AI review button to get coaching feedback on your responses before filing.</p>
+  </div>
+
+  <div class="meta-row">
+    <input type="text" id="f-name" placeholder="Your name" />
+    <input type="text" id="f-dept" placeholder="Department / project lead" />
+    <input type="text" id="f-date" placeholder="Date (e.g. 06-06-26)" />
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span id="prog-label">0 of 7 sections complete</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+
+  <div class="section-card" id="card-1">
+    <div class="section-header">
+      <div class="section-num" id="num-1">1</div>
+      <span class="section-label">Project / focus</span>
+    </div>
+    <div class="section-hint">Name the single most important initiative you are working on this quarter. Be specific enough that someone unfamiliar with your work could understand its scope.</div>
+    <textarea id="s1" placeholder="Name and describe the initiative clearly..."></textarea>
+    <div class="feedback-box" id="fb-1"><div class="feedback-label">AI coaching</div><div id="fb-1-text"></div></div>
+  </div>
+
+  <div class="section-card" id="card-2">
+    <div class="section-header">
+      <div class="section-num" id="num-2">2</div>
+      <span class="section-label">Purpose</span>
+    </div>
+    <div class="section-hint">What do you want to accomplish? Describe the goal you are aiming for. This is crucial information for your team so they can align with your intent.</div>
+    <textarea id="s2" placeholder="What are you trying to accomplish and why?"></textarea>
+    <div class="feedback-box" id="fb-2"><div class="feedback-label">AI coaching</div><div id="fb-2-text"></div></div>
+  </div>
+
+  <div class="section-card" id="card-3">
+    <div class="section-header">
+      <div class="section-num" id="num-3">3</div>
+      <span class="section-label">Importance</span>
+    </div>
+    <div class="section-hint">What is the biggest difference this will make? Why does it matter? Describe the impact in enough detail that you and your team can fully grasp its significance.</div>
+    <textarea id="s3" placeholder="Why does this matter? What changes if you succeed?"></textarea>
+    <div class="feedback-box" id="fb-3"><div class="feedback-label">AI coaching</div><div id="fb-3-text"></div></div>
+  </div>
+
+  <div class="section-card" id="card-4">
+    <div class="section-header">
+      <div class="section-num" id="num-4">4</div>
+      <span class="section-label">Ideal outcome</span>
+    </div>
+    <div class="section-hint">Paint a picture of the completed project. What does it look like when it is done? What is the payoff for the team, for clients, and for the business?</div>
+    <textarea id="s4" placeholder="Describe what success looks like in vivid, concrete terms..."></textarea>
+    <div class="feedback-box" id="fb-4"><div class="feedback-label">AI coaching</div><div id="fb-4-text"></div></div>
+  </div>
+
+  <div class="section-card" id="card-5">
+    <div class="section-header">
+      <div class="section-num" id="num-5">5</div>
+      <span class="section-label">Best result</span>
+    </div>
+    <div class="section-hint">What is the best that will happen if you take action? Articulating a positive outcome inspires and energizes the team to move forward with confidence.</div>
+    <textarea id="s5" placeholder="Best case scenario if you commit and execute..."></textarea>
+    <div class="feedback-box" id="fb-5"><div class="feedback-label">AI coaching</div><div id="fb-5-text"></div></div>
+  </div>
+
+  <div class="section-card" id="card-6">
+    <div class="section-header">
+      <div class="section-num" id="num-6">6</div>
+      <span class="section-label">Worst result</span>
+    </div>
+    <div class="section-hint">What is the worst that will happen if you do not take action? Seeing the cost of inaction is one of the most powerful motivators for moving a project forward.</div>
+    <textarea id="s6" placeholder="What is the real cost of not doing this?"></textarea>
+    <div class="feedback-box" id="fb-6"><div class="feedback-label">AI coaching</div><div id="fb-6-text"></div></div>
+  </div>
+
+  <div class="section-card" id="card-7">
+    <div class="section-header">
+      <div class="section-num" id="num-7">7</div>
+      <span class="section-label">Success criteria</span>
+    </div>
+    <div class="section-hint">What has to be true when this project is finished? List at least three specific, measurable criteria so the team can clearly judge whether the project succeeded.</div>
+    <div class="criteria-list">
+      <div class="criteria-row"><span class="num">1.</span><input type="text" id="c1" placeholder="Specific, measurable criterion..." /></div>
+      <div class="criteria-row"><span class="num">2.</span><input type="text" id="c2" placeholder="Specific, measurable criterion..." /></div>
+      <div class="criteria-row"><span class="num">3.</span><input type="text" id="c3" placeholder="Specific, measurable criterion..." /></div>
+      <div class="criteria-row"><span class="num">4.</span><input type="text" id="c4" placeholder="Optional..." /></div>
+      <div class="criteria-row"><span class="num">5.</span><input type="text" id="c5" placeholder="Optional..." /></div>
+      <div class="criteria-row"><span class="num">6.</span><input type="text" id="c6" placeholder="Optional..." /></div>
+      <div class="criteria-row"><span class="num">7.</span><input type="text" id="c7" placeholder="Optional..." /></div>
+      <div class="criteria-row"><span class="num">8.</span><input type="text" id="c8" placeholder="Optional..." /></div>
+    </div>
+    <div class="feedback-box" id="fb-7"><div class="feedback-label">AI coaching</div><div id="fb-7-text"></div></div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn btn-secondary" onclick="reviewWithAI()" id="review-btn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Review with AI
+    </button>
+    <button class="btn btn-primary" onclick="generateOutput()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+      Generate &amp; copy
+    </button>
+    <button class="btn btn-ghost" onclick="clearForm()">Clear form</button>
+  </div>
+
+  <div class="output-wrap" id="output-wrap">
+    <div class="output-header">
+      Completed impact filter — ready to paste into Bitrix24
+      <button class="copy-btn" onclick="copyOutput()">Copy all</button>
+    </div>
+    <div class="output-body" id="output-body"></div>
+  </div>
+
+  <div class="footer">
+    <span>Adapted from The Impact Filter® by Strategic Coach®</span>
+    <span>Complete one per initiative &nbsp;·&nbsp; File in Bitrix24 Operations Floor &nbsp;·&nbsp; Questions: contact Laurie</span>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const textIds = ['s1','s2','s3','s4','s5','s6'];
+  const criteriaIds = ['c1','c2','c3','c4','c5','c6','c7','c8'];
+
+  function getFilledCount() {
+    let n = 0;
+    textIds.forEach(id => { if (document.getElementById(id).value.trim().length > 20) n++; });
+    const cf = criteriaIds.filter(id => document.getElementById(id).value.trim().length > 4).length;
+    if (cf >= 3) n++;
+    return n;
+  }
+
+  function updateProgress() {
+    const n = getFilledCount();
+    const pct = Math.round(n / 7 * 100);
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-label').textContent = n + ' of 7 sections complete';
+    document.getElementById('prog-pct').textContent = pct + '%';
+    textIds.forEach((id, i) => {
+      const card = document.getElementById('card-' + (i + 1));
+      const num = document.getElementById('num-' + (i + 1));
+      const filled = document.getElementById(id).value.trim().length > 20;
+      card.classList.toggle('has-content', filled);
+      num.textContent = filled ? '✓' : (i + 1);
+    });
+    const cf = criteriaIds.filter(id => document.getElementById(id).value.trim().length > 4).length;
+    document.getElementById('card-7').classList.toggle('has-content', cf >= 3);
+    document.getElementById('num-7').textContent = cf >= 3 ? '✓' : '7';
+  }
+
+  textIds.forEach(id => document.getElementById(id).addEventListener('input', updateProgress));
+  criteriaIds.forEach(id => document.getElementById(id).addEventListener('input', updateProgress));
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  async function callAI(prompt) {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    return data.content?.map(b => b.text || '').join('') || 'No feedback available.';
+  }
+
+  async function reviewWithAI() {
+    const s1 = document.getElementById('s1').value.trim();
+    if (!s1) { showToast('Complete at least Section 1 before reviewing.'); return; }
+
+    const btn = document.getElementById('review-btn');
+    btn.disabled = true;
+    btn.textContent = 'Reviewing...';
+
+    const sections = [
+      { fbId: 'fb-1', field: 'Project / focus', val: document.getElementById('s1').value.trim() },
+      { fbId: 'fb-2', field: 'Purpose', val: document.getElementById('s2').value.trim() },
+      { fbId: 'fb-3', field: 'Importance', val: document.getElementById('s3').value.trim() },
+      { fbId: 'fb-4', field: 'Ideal outcome', val: document.getElementById('s4').value.trim() },
+      { fbId: 'fb-5', field: 'Best result', val: document.getElementById('s5').value.trim() },
+      { fbId: 'fb-6', field: 'Worst result', val: document.getElementById('s6').value.trim() },
+    ];
+
+    for (const sec of sections) {
+      if (!sec.val) continue;
+      const fb = document.getElementById(sec.fbId);
+      const fbText = document.getElementById(sec.fbId + '-text');
+      fb.style.display = 'block';
+      fb.classList.add('loading');
+      fbText.textContent = 'Reviewing...';
+      try {
+        const reply = await callAI(`You are an experienced strategic planning coach at Loyalty Untapped, a hospitality loyalty technology company. A team member has filled out this section of an Impact Filter (a Strategic Coach tool). Give them one short, specific, constructive insight — affirm what is strong or flag what is weak or vague. Be direct and conversational. Two to four sentences max. No bullet points. No preamble.\n\nSection: ${sec.field}\nResponse: "${sec.val}"`);
+        fbText.textContent = reply;
+        fb.classList.remove('loading');
+      } catch(e) {
+        fbText.textContent = 'Could not connect. Check your internet connection and try again.';
+        fb.classList.remove('loading');
+      }
+    }
+
+    const cf = criteriaIds.filter(id => document.getElementById(id).value.trim().length > 4);
+    if (cf.length >= 3) {
+      const cVals = cf.map((id, i) => (i + 1) + '. ' + document.getElementById(id).value.trim()).join('\n');
+      const fb7 = document.getElementById('fb-7');
+      const fb7Text = document.getElementById('fb-7-text');
+      fb7.style.display = 'block';
+      fb7.classList.add('loading');
+      fb7Text.textContent = 'Reviewing...';
+      try {
+        const reply = await callAI(`You are a strategic planning coach at Loyalty Untapped. A team member has listed these success criteria for their initiative. Are they specific and measurable enough to actually know when the project is done? Give one direct insight. Two to three sentences. No bullet points.\n\nCriteria:\n${cVals}`);
+        fb7Text.textContent = reply;
+        fb7.classList.remove('loading');
+      } catch(e) {
+        fb7Text.textContent = 'Could not connect.';
+        fb7.classList.remove('loading');
+      }
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Review with AI';
+    showToast('AI review complete');
+  }
+
+  function generateOutput() {
+    const name = document.getElementById('f-name').value.trim() || '—';
+    const dept = document.getElementById('f-dept').value.trim() || '—';
+    const date = document.getElementById('f-date').value.trim() || '—';
+    const s1 = document.getElementById('s1').value.trim();
+    if (!s1) { showToast('Complete at least Section 1 before generating.'); return; }
+
+    const cVals = criteriaIds
+      .map((id, i) => { const v = document.getElementById(id).value.trim(); return v ? (i + 1) + '.  ' + v : null; })
+      .filter(Boolean).join('\n');
+
+    const out =
+`IMPACT FILTER — LOYALTY UNTAPPED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Name: ${name}
+Department / Project lead: ${dept}
+Date: ${date}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1.  PROJECT / FOCUS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${document.getElementById('s1').value.trim() || '—'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2.  PURPOSE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${document.getElementById('s2').value.trim() || '—'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3.  IMPORTANCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${document.getElementById('s3').value.trim() || '—'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4.  IDEAL OUTCOME
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${document.getElementById('s4').value.trim() || '—'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5.  BEST RESULT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${document.getElementById('s5').value.trim() || '—'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6.  WORST RESULT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${document.getElementById('s6').value.trim() || '—'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7.  SUCCESS CRITERIA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${cVals || '—'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Adapted from The Impact Filter® by Strategic Coach®
+File in Bitrix24 Operations Floor · OPS-INT Strategic Planning Tool`;
+
+    document.getElementById('output-body').textContent = out;
+    document.getElementById('output-wrap').style.display = 'block';
+    document.getElementById('output-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    navigator.clipboard.writeText(out).then(() => showToast('Copied to clipboard'));
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('output-body').textContent;
+    navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard'));
+  }
+
+  function clearForm() {
+    if (!confirm('Clear all fields and reset the form?')) return;
+    [...textIds, ...criteriaIds, 'f-name', 'f-dept', 'f-date'].forEach(id => document.getElementById(id).value = '');
+    document.querySelectorAll('.feedback-box').forEach(el => { el.style.display = 'none'; });
+    document.getElementById('output-wrap').style.display = 'none';
+    updateProgress();
+    showToast('Form cleared');
+  }
+</script>
+</body>
+</html>
